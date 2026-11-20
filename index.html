@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Peluquería · Servicios y turnos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#241a22; --plum:#3b2438; --plum-2:#51304c; --rose:#c9607a; --rose-soft:#f7e4e8;
+  --blush:#fbf3f1; --paper:#ffffff; --line:#eadfe0; --muted:#7d6b74;
+  --ok:#2f7a4f; --ok-bg:#e5f3ea; --busy:#a2485a; --busy-bg:#f5e3e7;
+  --serif:"Cormorant Garamond",Georgia,serif; --sans:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font:16px/1.6 var(--sans);color:var(--ink);background:var(--blush)}
+[hidden]{display:none!important}
+.wrap{max-width:960px;margin:0 auto;padding:0 20px}
+
+/* Cabecera */
+.hero{background:radial-gradient(1200px 400px at 85% -10%,var(--plum-2),transparent 60%),var(--plum);color:#fff;padding:28px 0 64px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.brand{font:700 24px var(--serif);letter-spacing:.02em}
+.top a.tel{color:#fff;text-decoration:none;font-size:14px;border:1px solid rgba(255,255,255,.35);padding:7px 14px;border-radius:999px}
+.top a.tel:hover{background:rgba(255,255,255,.12)}
+.hero h1{font:600 clamp(38px,7vw,64px)/1.05 var(--serif);margin:48px 0 12px;max-width:14ch;text-wrap:balance}
+.hero p{margin:0 0 26px;color:#e9d9e2;max-width:46ch;font-size:17px}
+.cta{display:inline-block;background:var(--rose);color:#fff;text-decoration:none;font-weight:600;padding:13px 26px;border-radius:999px;transition:transform .15s,background .15s}
+.cta:hover{background:#d4708a;transform:translateY(-1px)}
+.cta.ghost{background:transparent;border:1px solid rgba(255,255,255,.45);margin-left:8px}
+.cta.ghost:hover{background:rgba(255,255,255,.1)}
+
+/* Secciones */
+main{margin-top:-36px}
+.panel{background:var(--paper);border-radius:20px;box-shadow:0 18px 40px -22px rgba(59,36,56,.35);padding:30px 24px;margin-bottom:28px}
+.eyebrow{color:var(--rose);font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase}
+h2{font:600 34px/1.15 var(--serif);margin:4px 0 6px}
+.lead{color:var(--muted);margin:0 0 22px}
+
+/* Servicios */
+.cats{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:22px}
+.cat{border:1px solid var(--line);border-radius:16px;padding:20px 20px 8px;background:linear-gradient(180deg,#fff,var(--blush))}
+.cat h3{font:600 24px var(--serif);margin:0 0 6px;color:var(--plum)}
+.svc{display:flex;justify-content:space-between;gap:14px;padding:12px 0;border-top:1px dashed var(--line)}
+.svc:first-of-type{border-top:0}
+.svc b{font-weight:600}
+.svc small{display:block;color:var(--muted);font-size:13px;line-height:1.4}
+.price{font:700 20px var(--serif);color:var(--plum);white-space:nowrap;font-variant-numeric:tabular-nums}
+
+/* Turnos */
+.days{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:18px;scrollbar-width:thin}
+.day{flex:0 0 auto;min-width:92px;border:1px solid var(--line);background:#fff;border-radius:14px;padding:10px 12px;cursor:pointer;text-align:center;font:inherit;color:var(--ink)}
+.day small{display:block;color:var(--muted);font-size:12px}
+.day b{font:600 20px var(--serif)}
+.day[aria-selected="true"]{background:var(--plum);color:#fff;border-color:var(--plum)}
+.day[aria-selected="true"] small{color:#e0cdd8}
+.avail{font-size:13px;color:var(--muted);margin:0 0 12px}
+.slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:8px}
+.slot{display:block;line-height:1.3;text-align:center;text-decoration:none;border-radius:12px;padding:10px 4px;font-weight:600;font-size:15px;font-variant-numeric:tabular-nums;background:var(--ok-bg);color:var(--ok);transition:transform .12s,box-shadow .12s}
+button.slot:hover{transform:translateY(-2px);box-shadow:0 8px 16px -10px var(--ok)}
+.slot span{display:block;font-weight:500;font-size:11px;opacity:.85}
+.slot.busy{background:var(--busy-bg);color:var(--busy);text-decoration:line-through;cursor:default}
+.slot.busy span{text-decoration:none}
+.slot.past{background:#efe9eb;color:#a89aa2;text-decoration:none}
+.modal{position:fixed;inset:0;background:rgba(36,26,34,.55);display:flex;align-items:center;justify-content:center;padding:16px;z-index:50}
+.box{background:#fff;border-radius:20px;max-width:440px;width:100%;max-height:90vh;overflow:auto;padding:24px;box-shadow:0 30px 60px -20px rgba(0,0,0,.45)}
+.box h3{font:600 28px/1.1 var(--serif);margin:0 0 4px;color:var(--plum)}
+.box .cuando{color:var(--muted);margin:0 0 16px}
+.opts{display:grid;gap:8px;margin-bottom:14px}
+.opt{display:flex;justify-content:space-between;gap:10px;align-items:center;border:1.5px solid var(--line);border-radius:12px;padding:11px 14px;cursor:pointer;background:#fff;font:inherit;color:var(--ink);text-align:left}
+.opt:hover{border-color:var(--rose)}
+.opt[aria-pressed="true"]{border-color:var(--rose);background:var(--rose-soft)}
+.opt b{font-weight:600}.opt span{color:var(--plum);font-weight:600;white-space:nowrap}
+.box input{width:100%;font:inherit;padding:11px 14px;border:1.5px solid var(--line);border-radius:12px;margin-bottom:14px}
+.acciones{display:flex;gap:8px;flex-wrap:wrap}
+.acciones .cta{border:0;cursor:pointer;font:inherit;font-weight:600;flex:1 1 auto;text-align:center}
+.acciones .cta:disabled{background:#d9c9cf;cursor:not-allowed;transform:none}
+.acciones .cancel{background:#fff;color:var(--ink);border:1.5px solid var(--line)}
+.aviso{background:#fff4d6;color:#6b4f00;border-radius:12px;padding:10px 14px;font-size:14px;margin:0 0 14px}
+.legend{display:flex;gap:16px;margin-top:16px;font-size:13px;color:var(--muted);flex-wrap:wrap}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:4px;margin-right:6px;vertical-align:-1px}
+
+/* Pie */
+footer{background:var(--plum);color:#e9d9e2;padding:36px 0 44px}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px}
+footer h4{font:600 22px var(--serif);color:#fff;margin:0 0 6px}
+footer p{margin:0;font-size:15px}
+footer a{color:#fff}
+.estado{font-size:12px;color:#b9a2b0;margin-top:26px}
+@media (max-width:520px){.panel{padding:22px 16px}.cta.ghost{margin:10px 0 0}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+:focus-visible{outline:3px solid var(--rose);outline-offset:2px}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="top">
+      <div class="brand" id="nombre">Peluquería</div>
+      <a class="tel" id="tel-top" href="#" hidden></a>
+    </div>
+    <h1 id="slogan">Tu estilo, a tu ritmo</h1>
+    <p>Mirá nuestros servicios, elegí un horario libre y reservá en un toque.</p>
+    <a class="cta" href="#turnos">Ver turnos libres</a>
+    <a class="cta ghost" href="#servicios">Servicios y precios</a>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="panel" id="servicios">
+    <div class="eyebrow">Carta</div>
+    <h2>Servicios y precios</h2>
+    <p class="lead">Precios actualizados. Consultá por promociones y combos.</p>
+    <div class="cats" id="lista-servicios"></div>
+  </section>
+
+  <section class="panel" id="turnos">
+    <div class="eyebrow">Agenda</div>
+    <h2>Turnos de la semana</h2>
+    <p class="lead">Los horarios en verde están libres. Tocá uno, elegí tu servicio y reservá por WhatsApp.</p>
+    <div class="days" id="dias" role="tablist"></div>
+    <div class="aviso" id="aviso" hidden></div>
+    <p class="avail" id="resumen-dia"></p>
+    <div class="slots" id="slots"></div>
+    <div class="legend">
+      <span><i style="background:var(--ok-bg)"></i>Libre</span>
+      <span><i style="background:var(--busy-bg)"></i>Ocupado</span>
+    </div>
+  </section>
+</main>
+
+<div class="modal" id="modal" hidden role="dialog" aria-modal="true" aria-labelledby="m-titulo">
+  <div class="box">
+    <h3 id="m-titulo">Reservar turno</h3>
+    <p class="cuando" id="m-cuando"></p>
+    <div class="opts" id="m-servicios"></div>
+    <input id="m-nombre" type="text" placeholder="Tu nombre (opcional)" autocomplete="name">
+    <div class="acciones">
+      <button class="cta cancel" id="m-cancelar" type="button">Cancelar</button>
+      <button class="cta" id="m-enviar" type="button" disabled>Enviar por WhatsApp</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div><h4>Dónde estamos</h4><p id="direccion">—</p></div>
+      <div><h4>Horarios</h4><p id="horarios">—</p></div>
+      <div><h4>Contacto</h4><p id="contacto">—</p></div>
+    </div>
+    <div class="estado" id="estado">Cargando…</div>
+  </div>
+</footer>
+
+<script>
+/* ====== CONFIGURACIÓN ======
+   Pegá acá los links CSV de cada pestaña de tu Google Sheets
+   (Archivo > Compartir > Publicar en la web > elegir pestaña > formato CSV).
+   Si dejás un link vacío, se muestran datos de ejemplo. */
+const URL_SERVICIOS_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSsI1oK8fm0HAT0nZkHWrMcA2Uu5i0svSF32NE74c0RG6J5PpIz6Dv0F7SXgfNM2DHRt-dRkFPvwyv0/pub?output=csv";
+const URL_TURNOS_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSsI1oK8fm0HAT0nZkHWrMcA2Uu5i0svSF32NE74c0RG6J5PpIz6Dv0F7SXgfNM2DHRt-dRkFPvwyv0/pub?output=csv";
+const URL_CONFIG_CSV = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSsI1oK8fm0HAT0nZkHWrMcA2Uu5i0svSF32NE74c0RG6J5PpIz6Dv0F7SXgfNM2DHRt-dRkFPvwyv0/pub?output=csv";
+const REFRESCO_MS = 1 * 60 * 1000;   // actualiza cada 5 minutos
+const HORA_INI = 9, HORA_FIN = 18.5; // turnos de 9:00 a 18:30, cada 30 minutos
+
+// Ejemplos (se usan si no hay link o falla la carga)
+const EJ_SERVICIOS = [
+  {categoria:"Cortes",servicio:"Corte mujer",descripcion:"Lavado y peinado incluido",precio:"2500",disponible:"si"},
+  {categoria:"Cortes",servicio:"Corte hombre",descripcion:"Con máquina o tijera",precio:"1800",disponible:"si"},
+  {categoria:"Color",servicio:"Tintura",descripcion:"Raíz o largo completo",precio:"6000",disponible:"si"},
+  {categoria:"Color",servicio:"Mechas",descripcion:"Consultar largo y cantidad",precio:"12000",disponible:"si"},
+  {categoria:"Tratamientos",servicio:"Alisado",descripcion:"Duración aprox. 3 horas",precio:"15000",disponible:"no"},
+  {categoria:"Tratamientos",servicio:"Brushing",descripcion:"Peinado con brushing",precio:"3000",disponible:"si"}
+];
+const EJ_TURNOS = [
+  {fecha:hoyMas(0),hora:"13:30",peluquero:"Ana",cliente:"Juana",servicio:"Tintura",estado:"ocupado"},
+  {fecha:hoyMas(0),hora:"16:00",peluquero:"Pedro",cliente:"Pedro R.",servicio:"Corte hombre",estado:"ocupado"},
+  {fecha:hoyMas(1),hora:"10:00",peluquero:"Ana",cliente:"Lucía",servicio:"Corte mujer",estado:"ocupado"}
+];
+const EJ_CONFIG = [
+  {clave:"nombre",valor:"Peluquería Aurora"},{clave:"slogan",valor:"Tu estilo, a tu ritmo"},
+  {clave:"telefono",valor:"11 1234-5678"},{clave:"whatsapp",valor:"5491112345678"},
+  {clave:"direccion",valor:"Av. Siempre Viva 742, Buenos Aires"},{clave:"horarios",valor:"Lunes a sábado de 9 a 19 h"}
+];
+
+const DIAS = ["Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado"];
+const MESES = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+function pad(n){return String(n).padStart(2,"0")}
+function ymd(d){return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())}
+function hoyMas(n){const d=new Date();d.setDate(d.getDate()+n);return ymd(d)}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+
+function parsearCSV(txt){
+  const filas=[];let fila=[],campo="",q=false;
+  for(let i=0;i<txt.length;i++){
+    const c=txt[i];
+    if(q){ if(c==='"'){ if(txt[i+1]==='"'){campo+='"';i++} else q=false } else campo+=c }
+    else if(c==='"') q=true;
+    else if(c===','){fila.push(campo);campo=""}
+    else if(c==='\n'){fila.push(campo);filas.push(fila);fila=[];campo=""}
+    else if(c!=='\r') campo+=c;
+  }
+  if(campo||fila.length){fila.push(campo);filas.push(fila)}
+  const cab=(filas.shift()||[]).map(h=>h.trim().toLowerCase());
+  return filas.filter(f=>f.some(x=>x.trim())).map(f=>Object.fromEntries(cab.map((h,i)=>[h,(f[i]||"").trim()])));
+}
+async function cargarCSV(url){
+  const r=await fetch(url+(url.includes("?")?"&":"?")+"t="+Date.now(),{cache:"no-store"});
+  if(!r.ok) throw new Error("HTTP "+r.status);
+  return parsearCSV(await r.text());
+}
+function normFecha(s){
+  s=String(s).trim();
+  let m=s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/); if(m) return `${m[1]}-${pad(m[2])}-${pad(m[3])}`;
+  m=s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/); if(m) return `${m[3]}-${pad(m[2])}-${pad(m[1])}`;
+  return s;
+}
+function normHora(s){const m=String(s).trim().match(/^(\d{1,2})[:.](\d{2})/);return m?`${pad(m[1])}:${m[2]}`:String(s).trim()}
+
+let CONFIG={}, TURNOS=[], SERVICIOS=[], diaSel=null, reserva=null, elegidos=new Set();
+
+function proximosDias(){
+  const out=[],ini=new Date();ini.setHours(0,0,0,0);
+  for(let i=0;i<20&&out.length<6;i++){
+    const d=new Date(ini);d.setDate(ini.getDate()+i);
+    if(d.getDay()!==0) out.push(d);
+  }
+  return out;
+}
+function horasDelDia(){
+  const h=[];for(let x=HORA_INI;x<=HORA_FIN;x+=0.5) h.push(pad(Math.floor(x))+":"+(x%1?"30":"00"));
+  return h;
+}
+
+function renderConfig(filas){
+  CONFIG=Object.fromEntries(filas.map(f=>[f.clave,f.valor]));
+  const n=CONFIG.nombre||"Peluquería";
+  document.getElementById("nombre").textContent=n;
+  document.title=n+" · Servicios y turnos";
+  if(CONFIG.slogan) document.getElementById("slogan").textContent=CONFIG.slogan;
+  const tel=CONFIG.telefono, wa=(CONFIG.whatsapp||"").replace(/\D/g,"");
+  const top=document.getElementById("tel-top");
+  if(tel){top.textContent="Llamar · "+tel;top.href="tel:"+tel.replace(/[^\d+]/g,"");top.hidden=false}
+  document.getElementById("direccion").textContent=CONFIG.direccion||"—";
+  document.getElementById("horarios").textContent=CONFIG.horarios||"—";
+  document.getElementById("contacto").innerHTML=
+    (tel?`Teléfono: ${esc(tel)}`:"")+(wa?`<br><a href="https://wa.me/${wa}" target="_blank" rel="noopener">Escribinos por WhatsApp</a>`:"") || "—";
+}
+
+function renderServicios(filas){
+  const activos=filas.filter(f=>/^(si|sí|s|yes)$/i.test(f.disponible||"si"));
+  SERVICIOS=activos;
+  const cats={};
+  activos.forEach(f=>{const k=f.categoria||"Otros";(cats[k]=cats[k]||[]).push(f)});
+  document.getElementById("lista-servicios").innerHTML=Object.keys(cats).length
+    ? Object.entries(cats).map(([c,items])=>`
+      <div class="cat"><h3>${esc(c)}</h3>${items.map(f=>`
+        <div class="svc"><div><b>${esc(f.servicio)}</b>${f.descripcion?`<small>${esc(f.descripcion)}</small>`:""}</div>
+        <div class="price">$${Number(String(f.precio).replace(/[^\d.]/g,"")||0).toLocaleString("es-AR")}</div></div>`).join("")}
+      </div>`).join("")
+    : `<p class="lead">Por ahora no hay servicios cargados.</p>`;
+}
+
+function ocupadosDe(f){
+  return TURNOS.filter(t=>t.fecha===f);
+}
+function renderDias(){
+  const dias=proximosDias();
+  if(!diaSel||!dias.some(d=>ymd(d)===diaSel)) diaSel=ymd(dias[0]);
+  document.getElementById("dias").innerHTML=dias.map(d=>{
+    const f=ymd(d);
+    return `<button class="day" role="tab" aria-selected="${f===diaSel}" data-f="${f}"><small>${DIAS[d.getDay()].slice(0,3)}</small><b>${d.getDate()}</b><small>${MESES[d.getMonth()].slice(0,3)}</small></button>`;
+  }).join("");
+  renderSlots();
+}
+function renderSlots(){
+  const horas=horasDelDia(), oc=ocupadosDe(diaSel);
+  const d=new Date(diaSel+"T00:00:00");
+  const wa=(CONFIG.whatsapp||"").replace(/\D/g,"");
+  const ahora=new Date(), esHoy=diaSel===ymd(ahora), minAhora=ahora.getHours()*60+ahora.getMinutes();
+  let libres=0;
+  document.getElementById("slots").innerHTML=horas.map(h=>{
+    const [hh,mm]=h.split(":").map(Number);
+    const pasado=esHoy&&hh*60+mm<=minAhora;
+    const t=oc.find(x=>x.hora===h);
+    if(t) return `<div class="slot busy">${h}<span>${esc(t.peluquero||"Ocupado")}</span></div>`;
+    if(pasado) return `<div class="slot past">${h}<span>ya pasó</span></div>`;
+    libres++;
+    return `<button class="slot" type="button" data-h="${h}" style="border:0;font-family:inherit;cursor:pointer;width:100%">${h}<span>libre</span></button>`;
+  }).join("");
+  document.getElementById("resumen-dia").textContent=
+    `${DIAS[d.getDay()]} ${d.getDate()} de ${MESES[d.getMonth()]}: ${libres} de ${horas.length} horarios libres.`;
+}
+document.getElementById("dias").addEventListener("click",e=>{
+  const b=e.target.closest("[data-f]");if(!b) return;diaSel=b.dataset.f;renderDias();
+});
+
+document.getElementById("slots").addEventListener("click",e=>{
+  const b=e.target.closest("[data-h]"); if(!b) return;
+  abrirReserva(b.dataset.h);
+});
+function abrirReserva(h){
+  const d=new Date(diaSel+"T00:00:00");
+  reserva={h,texto:`${DIAS[d.getDay()]} ${d.getDate()} de ${MESES[d.getMonth()]} a las ${h}`};
+  elegidos=new Set();
+  document.getElementById("m-cuando").textContent=reserva.texto+". Elegí qué querés hacerte (podés marcar más de uno).";
+  document.getElementById("m-servicios").innerHTML=SERVICIOS.length
+    ? SERVICIOS.map((f,i)=>`<button type="button" class="opt" aria-pressed="false" data-i="${i}"><b>${esc(f.servicio)}</b><span>$${Number(String(f.precio).replace(/[^\d.]/g,"")||0).toLocaleString("es-AR")}</span></button>`).join("")
+    : `<p class="lead">No hay servicios cargados.</p>`;
+  document.getElementById("m-enviar").disabled=true;
+  document.getElementById("modal").hidden=false;
+}
+function cerrarReserva(){document.getElementById("modal").hidden=true}
+document.getElementById("m-servicios").addEventListener("click",e=>{
+  const b=e.target.closest("[data-i]"); if(!b) return;
+  const i=Number(b.dataset.i);
+  elegidos.has(i)?elegidos.delete(i):elegidos.add(i);
+  b.setAttribute("aria-pressed",elegidos.has(i));
+  document.getElementById("m-enviar").disabled=elegidos.size===0;
+});
+document.getElementById("m-cancelar").addEventListener("click",cerrarReserva);
+document.getElementById("modal").addEventListener("click",e=>{if(e.target.id==="modal")cerrarReserva()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")cerrarReserva()});
+document.getElementById("m-enviar").addEventListener("click",()=>{
+  const wa=(CONFIG.whatsapp||"").replace(/\D/g,"");
+  if(!wa){alert("Falta cargar el número de WhatsApp en la planilla (pestaña Configuracion).");return}
+  const lista=[...elegidos].map(i=>SERVICIOS[i].servicio).join(", ");
+  const nombre=document.getElementById("m-nombre").value.trim();
+  const msg=`Hola! Quiero reservar turno el ${reserva.texto}. Servicio: ${lista}.`+(nombre?` Mi nombre es ${nombre}.`:"");
+  window.open("https://wa.me/"+wa+"?text="+encodeURIComponent(msg),"_blank","noopener");
+  cerrarReserva();
+});
+
+function renderTurnos(filas){
+  TURNOS=filas.map(f=>({fecha:normFecha(f.fecha),hora:normHora(f.hora),peluquero:f.peluquero,estado:(f.estado||"ocupado").toLowerCase()}))
+    .filter(t=>t.estado!=="libre"&&t.estado!=="cancelado");
+  renderDias();
+}
+
+async function actualizar(){
+  const est=document.getElementById("estado"), av=document.getElementById("aviso");
+  const errores=[];
+  const COLS={Servicios:["servicio","precio"],Turnos:["fecha","hora"],Configuracion:["clave","valor"]};
+  async function hoja(url,ejemplo,nombre){
+    if(!url) return ejemplo;               // sin link: datos de ejemplo
+    try{
+      const filas=await cargarCSV(url);
+      // Si la hoja no tiene las columnas esperadas, el link apunta a otra pestaña.
+      if(filas.length && !COLS[nombre].every(c=>c in filas[0])){ errores.push(nombre+" (el link apunta a otra pestaña)"); return []; }
+      return filas;
+    }
+    catch(e){ errores.push(nombre); return []; } // con link: nunca mostrar ejemplos
+  }
+  const cfg=await hoja(URL_CONFIG_CSV,EJ_CONFIG,"Configuracion");
+  const svc=await hoja(URL_SERVICIOS_CSV,EJ_SERVICIOS,"Servicios");
+  const trn=await hoja(URL_TURNOS_CSV,EJ_TURNOS,"Turnos");
+  renderConfig(cfg); renderServicios(svc); renderTurnos(trn);
+  const sinLink=[["Servicios",URL_SERVICIOS_CSV],["Turnos",URL_TURNOS_CSV],["Configuracion",URL_CONFIG_CSV]].filter(x=>!x[1]).map(x=>x[0]);
+  if(errores.length){ av.hidden=false; av.textContent="No se pudo leer la planilla ("+errores.join(", ")+"). Revisá que esté publicada en la web como CSV y que el link esté bien pegado."; }
+  else if(sinLink.length){ av.hidden=false; av.textContent="Datos de ejemplo en: "+sinLink.join(", ")+". Falta pegar el link CSV de esa pestaña en el archivo."; }
+  else av.hidden=true;
+  est.textContent="Actualizado "+new Date().toLocaleTimeString("es-AR",{hour:"2-digit",minute:"2-digit"});
+}
+actualizar();
+setInterval(actualizar,REFRESCO_MS);
+</script>
+</body>
+</html>
